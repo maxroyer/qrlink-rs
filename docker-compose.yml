@@ -1,0 +1,44 @@
+services:
+  qrlink:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: qrlink:latest
+    container_name: qrlink
+    restart: unless-stopped
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      DATABASE_URL: sqlite:/data/shortener.db
+      BASE_URL: http://localhost:8080
+      HOST: "0.0.0.0"
+      PORT: "8080"
+      QR_BRANDING_LOGO: /app/assets/logo.svg
+      QR_SIZE: "512"
+      RUST_LOG: qrlink=info,tower_http=info
+
+    volumes:
+      - shortener-data:/data
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # Backup service - run with: docker compose run --rm backup
+  backup:
+    image: keinos/sqlite3
+    container_name: qrlink-backup
+    volumes:
+      - shortener-data:/data:ro
+      - ./backups:/backup
+    entrypoint: >
+      sh -c "sqlite3 /data/shortener.db '.backup /backup/shortener-$$(date +%Y%m%d-%H%M%S).db'"
+    profiles: ["backup"]
+
+volumes:
+  shortener-data:
