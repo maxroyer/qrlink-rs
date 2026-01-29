@@ -17,6 +17,7 @@ services:
       PORT: "8080"
       QR_BRANDING_LOGO: /app/assets/logo.svg
       QR_SIZE: "512"
+      CLEANUP_INTERVAL_MINUTES: "60"
       RUST_LOG: qrlink=info,tower_http=info
 
     volumes:

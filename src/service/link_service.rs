@@ -85,4 +85,100 @@ impl LinkService {
         }
         Ok(())
     }
+
+    /// Clean up expired links (for periodic job).
+    pub async fn cleanup_expired(&self) -> AppResult<u64> {
+        self.repo.delete_expired().await
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::repository::init_db;
+    use chrono::Duration;
+
+    #[tokio::test]
+    async fn test_cleanup_expired_links() {
+        // Setup in-memory database
+        let pool = init_db("sqlite::memory:").await.unwrap();
+        let repo = LinkRepository::new(pool);
+        let service = LinkService::new(repo.clone(), "http://test.local".to_string());
+
+        let now = Utc::now();
+
+        // Create link that expired 1 hour ago (manually via repo)
+        let expired_id = Uuid::new_v4();
+        let expired_code = ShortCode::generate();
+        let expired_url = Url::parse("https://expired.com").unwrap();
+        let expired_at = now - Duration::hours(1);
+        repo.create(expired_id, &expired_code, &expired_url, now, Some(expired_at))
+            .await
+            .unwrap();
+
+        // Create link that expires in 1 week (via service)
+        let valid_link = service
+            .create_link("https://valid.com", Some(Ttl::OneWeek))
+            .await
+            .unwrap();
+
+        // Create link with no expiration (via service)
+        let permanent_link = service
+            .create_link("https://permanent.com", None)
+            .await
+            .unwrap();
+
+        // Verify all links exist
+        let all_links_before = service.list_all().await.unwrap();
+        assert_eq!(all_links_before.len(), 3);
+
+        // Run cleanup
+        let deleted_count = service.cleanup_expired().await.unwrap();
+
+        // Should have deleted only the expired link
+        assert_eq!(deleted_count, 1);
+
+        // Verify only 2 links remain
+        let all_links_after = service.list_all().await.unwrap();
+        assert_eq!(all_links_after.len(), 2);
+
+        // Verify the right links remain
+        let remaining_codes: Vec<String> = all_links_after
+            .iter()
+            .map(|l| l.short_code.clone())
+            .collect();
+
+        assert!(remaining_codes.contains(&valid_link.short_code));
+        assert!(remaining_codes.contains(&permanent_link.short_code));
+        assert!(!remaining_codes.contains(&expired_code.to_string()));
+    }
+
+    #[tokio::test]
+    async fn test_cleanup_no_expired_links() {
+        // Setup in-memory database
+        let pool = init_db("sqlite::memory:").await.unwrap();
+        let repo = LinkRepository::new(pool);
+        let service = LinkService::new(repo, "http://test.local".to_string());
+
+        // Create only valid links
+        service
+            .create_link("https://valid1.com", Some(Ttl::OneWeek))
+            .await
+            .unwrap();
+
+        service
+            .create_link("https://valid2.com", None)
+            .await
+            .unwrap();
+
+        // Run cleanup
+        let deleted_count = service.cleanup_expired().await.unwrap();
+
+        // Should not have deleted anything
+        assert_eq!(deleted_count, 0);
+
+        // Verify both links still exist
+        let all_links = service.list_all().await.unwrap();
+        assert_eq!(all_links.len(), 2);
+    }
 }

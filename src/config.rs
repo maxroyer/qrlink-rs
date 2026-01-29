@@ -17,6 +17,8 @@ pub struct Config {
     pub qr_branding_logo: Option<PathBuf>,
     /// QR code size in pixels
     pub qr_size: u32,
+    /// Cleanup interval in minutes (0 to disable)
+    pub cleanup_interval_minutes: u64,
 }
 
 impl Config {
@@ -58,6 +60,11 @@ impl Config {
             .parse()
             .map_err(|_| ConfigError::InvalidQrSize)?;
 
+        let cleanup_interval_minutes = std::env::var("CLEANUP_INTERVAL_MINUTES")
+            .unwrap_or_else(|_| "60".to_string())
+            .parse()
+            .map_err(|_| ConfigError::InvalidCleanupInterval)?;
+
         Ok(Config {
             database_url,
             base_url,
@@ -66,6 +73,7 @@ impl Config {
             rate_limit_per_minute,
             qr_branding_logo,
             qr_size,
+            cleanup_interval_minutes,
         })
     }
 }
@@ -78,4 +86,6 @@ pub enum ConfigError {
     InvalidRateLimit,
     #[error("Invalid QR size value")]
     InvalidQrSize,
+    #[error("Invalid cleanup interval value")]
+    InvalidCleanupInterval,
 }

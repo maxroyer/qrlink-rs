@@ -8,6 +8,7 @@ mod repository;
 mod service;
 
 use std::net::SocketAddr;
+use std::time::Duration;
 
 use config::Config;
 use repository::{init_db, LinkRepository};
@@ -49,7 +50,31 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let rate_limiter = rate_limit::RateLimiter::new(config.rate_limit_per_minute);
 
     // Create router
-    let app = http::create_router(link_service, qr_service, rate_limiter);
+    let app = http::create_router(link_service.clone(), qr_service, rate_limiter);
+
+    // Start cleanup task if enabled
+    if config.cleanup_interval_minutes > 0 {
+        let cleanup_service = link_service.clone();
+        let interval_minutes = config.cleanup_interval_minutes;
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(Duration::from_secs(interval_minutes * 60));
+            loop {
+                interval.tick().await;
+                tracing::info!("Running cleanup of expired links");
+                match cleanup_service.cleanup_expired().await {
+                    Ok(count) => {
+                        if count > 0 {
+                            tracing::info!("Cleaned up {} expired link(s)", count);
+                        }
+                    }
+                    Err(e) => tracing::error!("Failed to cleanup expired links: {}", e),
+                }
+            }
+        });
+        tracing::info!("Cleanup task enabled (interval: {}m)", interval_minutes);
+    } else {
+        tracing::info!("Cleanup task disabled");
+    }
 
     // Start server
     let addr: SocketAddr = format!("{}:{}", config.host, config.port).parse()?;

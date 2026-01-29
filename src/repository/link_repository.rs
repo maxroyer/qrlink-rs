@@ -110,6 +110,22 @@ impl LinkRepository {
         Ok(result.rows_affected() > 0)
     }
 
+    /// Delete all expired links.
+    pub async fn delete_expired(&self) -> AppResult<u64> {
+        let now = Utc::now().to_rfc3339();
+        let result = sqlx::query(
+            r#"
+            DELETE FROM links
+            WHERE expires_at IS NOT NULL AND expires_at < ?
+            "#,
+        )
+        .bind(&now)
+        .execute(&self.pool)
+        .await?;
+
+        Ok(result.rows_affected())
+    }
+
     fn row_to_link(&self, row: sqlx::sqlite::SqliteRow) -> AppResult<Link> {
         let id_str: String = row.get("id");
         let id = Uuid::parse_str(&id_str)
