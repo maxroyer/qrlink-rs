@@ -10,6 +10,7 @@ A self-hosted URL shortener written in Rust 🦀 designed for on-premise environ
 - **Time-to-Live (TTL)**: Optional expiration with presets (1 week, 1 month, 1 year, never)
 - **QR Code Generation**: Automatic QR codes with corporate branding
 - **SQLite Database**: Zero-dependency, single-file persistence
+- **Web UI**: Simple, elegant frontend for link creation and QR Code generation
 
 
 ## Quick Start
@@ -30,6 +31,7 @@ The defaults work out of the box:
 - Database: `sqlite:data/shortener.db`
 - Base URL: `http://localhost:8080`
 - QR Logo: `assets/logo.svg`
+- Web UI: `http://localhost:8080/`
 
 ## API Documentation
 
