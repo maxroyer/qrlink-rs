@@ -1,7 +1,7 @@
 use axum::{
+    Router,
     extract::connect_info::IntoMakeServiceWithConnectInfo,
     routing::{delete, get, post},
-    Router,
 };
 use tower_http::{
     cors::{Any, CorsLayer},

@@ -11,7 +11,7 @@ use std::net::SocketAddr;
 use std::time::Duration;
 
 use config::Config;
-use repository::{init_db, LinkRepository};
+use repository::{LinkRepository, init_db};
 use service::{LinkService, QrService};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -85,4 +85,3 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
-

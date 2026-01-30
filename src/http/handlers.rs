@@ -1,8 +1,8 @@
 use axum::{
-    extract::{ConnectInfo, Path, State},
-    http::{header, StatusCode},
-    response::{IntoResponse, Redirect, Response},
     Json,
+    extract::{ConnectInfo, Path, State},
+    http::{StatusCode, header},
+    response::{IntoResponse, Redirect, Response},
 };
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
@@ -63,8 +63,8 @@ pub async fn create_qr(
         return Err(AppError::RateLimitExceeded(retry_after));
     }
 
-    let url = Url::parse(&req.url)
-        .map_err(|e| AppError::InvalidUrl(format!("{}: {}", e, req.url)))?;
+    let url =
+        Url::parse(&req.url).map_err(|e| AppError::InvalidUrl(format!("{}: {}", e, req.url)))?;
 
     let png_data = state.qr_service.generate_for_url(url.as_str())?;
 
@@ -78,9 +78,7 @@ pub async fn create_qr(
 
 /// Handler for listing all links.
 /// GET /api/v1/links
-pub async fn list_links(
-    State(state): State<AppState>,
-) -> AppResult<Json<Vec<LinkResponse>>> {
+pub async fn list_links(State(state): State<AppState>) -> AppResult<Json<Vec<LinkResponse>>> {
     let links = state.link_service.list_all().await?;
     Ok(Json(links))
 }

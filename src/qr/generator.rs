@@ -82,8 +82,7 @@ fn load_logo(path: &PathBuf) -> Result<RgbaImage, String> {
 
 /// Load an SVG logo and render it to a raster image.
 fn load_svg_logo(path: &PathBuf) -> Result<RgbaImage, String> {
-    let svg_data =
-        std::fs::read(path).map_err(|e| format!("Failed to read SVG file: {}", e))?;
+    let svg_data = std::fs::read(path).map_err(|e| format!("Failed to read SVG file: {}", e))?;
 
     let options = resvg::usvg::Options::default();
     let tree = resvg::usvg::Tree::from_data(&svg_data, &options)

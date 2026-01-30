@@ -41,8 +41,7 @@ impl RateLimiter {
         }
 
         if entry.0 >= self.limit {
-            let retry_after = self.window.as_secs()
-                - now.duration_since(entry.1).as_secs();
+            let retry_after = self.window.as_secs() - now.duration_since(entry.1).as_secs();
             return Err(retry_after.max(1));
         }
 
@@ -117,10 +116,13 @@ mod tests {
         // 61st request should be rate limited
         let result = limiter.check(ip).await;
         assert!(result.is_err(), "Request 61 should be rate limited");
-        
+
         // Verify retry_after is returned
         let retry_after = result.unwrap_err();
-        assert!(retry_after > 0 && retry_after <= limit_per_minute as u64, 
-                "retry_after should be between 1 and 60 seconds, got {}", retry_after);
+        assert!(
+            retry_after > 0 && retry_after <= limit_per_minute as u64,
+            "retry_after should be between 1 and 60 seconds, got {}",
+            retry_after
+        );
     }
 }

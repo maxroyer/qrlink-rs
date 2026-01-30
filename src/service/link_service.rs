@@ -22,14 +22,10 @@ impl LinkService {
     }
 
     /// Create a new short link.
-    pub async fn create_link(
-        &self,
-        target_url: &str,
-        ttl: Option<Ttl>,
-    ) -> AppResult<LinkResponse> {
+    pub async fn create_link(&self, target_url: &str, ttl: Option<Ttl>) -> AppResult<LinkResponse> {
         // Validate URL
-        let url =
-            Url::parse(target_url).map_err(|e| AppError::InvalidUrl(format!("{}: {}", e, target_url)))?;
+        let url = Url::parse(target_url)
+            .map_err(|e| AppError::InvalidUrl(format!("{}: {}", e, target_url)))?;
 
         let now = Utc::now();
         let expires_at = ttl.and_then(|t| t.expires_at(now));
@@ -112,9 +108,15 @@ mod tests {
         let expired_code = ShortCode::generate();
         let expired_url = Url::parse("https://expired.com").unwrap();
         let expired_at = now - Duration::hours(1);
-        repo.create(expired_id, &expired_code, &expired_url, now, Some(expired_at))
-            .await
-            .unwrap();
+        repo.create(
+            expired_id,
+            &expired_code,
+            &expired_url,
+            now,
+            Some(expired_at),
+        )
+        .await
+        .unwrap();
 
         // Create link that expires in 1 week (via service)
         let valid_link = service

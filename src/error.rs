@@ -1,7 +1,7 @@
 use axum::{
-    http::{header, StatusCode},
-    response::{IntoResponse, Response},
     Json,
+    http::{StatusCode, header},
+    response::{IntoResponse, Response},
 };
 use serde::Serialize;
 
@@ -46,7 +46,9 @@ impl IntoResponse for AppError {
         let (status, error, message) = match &self {
             AppError::LinkNotFound => (StatusCode::NOT_FOUND, "not_found", None),
             AppError::LinkExpired => (StatusCode::GONE, "link_expired", None),
-            AppError::InvalidUrl(msg) => (StatusCode::BAD_REQUEST, "invalid_url", Some(msg.clone())),
+            AppError::InvalidUrl(msg) => {
+                (StatusCode::BAD_REQUEST, "invalid_url", Some(msg.clone()))
+            }
             AppError::RateLimitExceeded(retry_after) => {
                 let body = ErrorResponse {
                     error: "rate_limit_exceeded".to_string(),
@@ -59,16 +61,22 @@ impl IntoResponse for AppError {
                 )
                     .into_response();
             }
-            AppError::ShortCodeExhausted => {
-                (StatusCode::SERVICE_UNAVAILABLE, "short_code_exhausted", None)
-            }
+            AppError::ShortCodeExhausted => (
+                StatusCode::SERVICE_UNAVAILABLE,
+                "short_code_exhausted",
+                None,
+            ),
             AppError::Database(e) => {
                 tracing::error!("Database error: {:?}", e);
                 (StatusCode::INTERNAL_SERVER_ERROR, "internal_error", None)
             }
             AppError::QrGeneration(msg) => {
                 tracing::error!("QR generation error: {}", msg);
-                (StatusCode::INTERNAL_SERVER_ERROR, "qr_error", Some(msg.clone()))
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "qr_error",
+                    Some(msg.clone()),
+                )
             }
             AppError::Internal(msg) => {
                 tracing::error!("Internal error: {}", msg);
