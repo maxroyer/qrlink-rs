@@ -21,7 +21,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "url_shortener=debug,tower_http=debug".into()),
+                .unwrap_or_else(|_| "qrlink=info,tower_http=info".into()),
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
@@ -31,7 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Load configuration
     let config = Config::from_env()?;
-    tracing::info!("Starting URL Shortener service");
+    tracing::info!("Starting QRLink service");
     tracing::info!("Base URL: {}", config.base_url);
     tracing::info!("Database: {}", config.database_url);
 

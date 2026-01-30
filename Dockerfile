@@ -28,6 +28,7 @@ WORKDIR /app
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y \
     ca-certificates \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the binary
@@ -38,6 +39,9 @@ COPY --from=builder /app/migrations /app/migrations
 
 # Copy branding assets
 COPY --from=builder /app/assets /app/assets
+
+# Copy frontend static files
+COPY public /app/public
 
 # Create data directory with proper permissions
 RUN mkdir -p /data && chmod 777 /data
