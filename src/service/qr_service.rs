@@ -28,8 +28,6 @@ impl QrService {
 
     /// Generate a QR code PNG for a raw URL (no shortening).
     pub fn generate_for_url(&self, url: &str) -> AppResult<Vec<u8>> {
-        self.generator
-            .generate(url)
-            .map_err(AppError::QrGeneration)
+        self.generator.generate(url).map_err(AppError::QrGeneration)
     }
 }
