@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRLink</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <span class="logo">QRLink</span>
+            <span class="ferris">🦀</span>
+        </div>
+        
+        <div class="header-center">
+            <div class="mode-toggle">
+                <button type="button" class="mode-btn active" data-mode="link">URL Shortener</button>
+                <button type="button" class="mode-btn" data-mode="qr">QR Code</button>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <a href="https://github.com/maxroyer/qrlink-rs" target="_blank" class="icon-btn" aria-label="GitHub">
+                <i data-lucide="github"></i>
+            </a>
+            <button type="button" class="icon-btn" id="theme-toggle" aria-label="Toggle theme">
+                <i data-lucide="sun" id="theme-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="card">
+            <form id="form">
+                <div class="input-group">
+                    <label for="url" class="label">Enter URL</label>
+                    <input type="url" id="url" class="input" placeholder="https://example.com/your/long/path" required>
+                </div>
+
+                <div id="ttl-options" class="ttl-options">
+                    <label for="ttl" class="label">Expiration</label>
+                    <div class="ttl-grid">
+                        <label class="ttl-option">
+                            <input type="radio" name="ttl" value="1_week" checked>
+                            <span>1 Week</span>
+                        </label>
+                        <label class="ttl-option">
+                            <input type="radio" name="ttl" value="1_month">
+                            <span>1 Month</span>
+                        </label>
+                        <label class="ttl-option">
+                            <input type="radio" name="ttl" value="1_year">
+                            <span>1 Year</span>
+                        </label>
+                        <label class="ttl-option">
+                            <input type="radio" name="ttl" value="never">
+                            <span>Never</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submit-btn">Generate Short Link</button>
+            </form>
+
+            <div id="result" class="result" style="display: none;"></div>
+            <div id="error" class="error" style="display: none;"></div>
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Generating...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
