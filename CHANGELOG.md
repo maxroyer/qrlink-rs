@@ -1,4 +1,6 @@
 ## What's Changed in 1.0.0
+* ci: add token to trigger workflow
+* chore: update CHANGELOG for v1.0.0
 * chore: fix cliff.toml file
 * feat: copy frontend in docker and remove last occurences to old app name
 * feat: add web frontend
