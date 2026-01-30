@@ -1,6 +1,8 @@
 # qrlink - URL Shortener & Branded QR Code Generator
 
-A self-hosted URL shortener written in Rust 🦀 designed for on-premise environments.
+A self-hosted URL shortener written in Rust 🦀 designed for on-premise environments. Branded QR Code generator as well.
+
+<p align="center"><img src="assets/qr-logo.png" width="168"></p>
 
 ## Features
 
@@ -8,6 +10,7 @@ A self-hosted URL shortener written in Rust 🦀 designed for on-premise environ
 - **Time-to-Live (TTL)**: Optional expiration with presets (1 week, 1 month, 1 year, never)
 - **QR Code Generation**: Automatic QR codes with corporate branding
 - **SQLite Database**: Zero-dependency, single-file persistence
+
 
 ## Quick Start
 
