@@ -1,0 +1,60 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (e.g., 0.2.0)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
+
+      - name: Validate version format
+        run: |
+          if ! [[ "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version format. Use X.Y.Z (e.g., 0.2.0)"
+            exit 1
+          fi
+
+      - name: Generate changelog
+        run: |
+          git cliff --tag "v${{ github.event.inputs.version }}" > CHANGELOG.md
+          git cliff --tag "v${{ github.event.inputs.version }}" --strip all > /tmp/tag-message.md
+
+      - name: Commit changelog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git commit -m "chore: update CHANGELOG for v${{ github.event.inputs.version }}" || echo "No changes to commit"
+          git push origin main
+
+      - name: Create and push tag
+        run: |
+          git tag -a "v${{ github.event.inputs.version }}" -F /tmp/tag-message.md
+          git push origin "v${{ github.event.inputs.version }}"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git cliff --tag "v${{ github.event.inputs.version }}" --strip all | \
+            gh release create "v${{ github.event.inputs.version }}" \
+              --title "v${{ github.event.inputs.version }}" \
+              --notes-file -
