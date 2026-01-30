@@ -48,10 +48,10 @@ impl LinkRepository {
         .execute(&self.pool)
         .await
         .map_err(|e| {
-            if let sqlx::Error::Database(ref db_err) = e {
-                if db_err.message().contains("UNIQUE constraint failed") {
-                    return AppError::ShortCodeExhausted;
-                }
+            if let sqlx::Error::Database(ref db_err) = e
+                && db_err.message().contains("UNIQUE constraint failed")
+            {
+                return AppError::ShortCodeExhausted;
             }
             AppError::Database(e)
         })?;

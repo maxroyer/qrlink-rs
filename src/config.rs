@@ -79,6 +79,7 @@ impl Config {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[allow(clippy::enum_variant_names)]
 pub enum ConfigError {
     #[error("Invalid port number")]
     InvalidPort,

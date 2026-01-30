@@ -11,10 +11,10 @@ pub type DbPool = SqlitePool;
 /// Initialize the database pool and run migrations.
 pub async fn init_db(database_url: &str) -> Result<DbPool, sqlx::Error> {
     // Ensure the data directory exists
-    if let Some(path) = database_url.strip_prefix("sqlite:") {
-        if let Some(parent) = std::path::Path::new(path).parent() {
-            std::fs::create_dir_all(parent).map_err(|e| sqlx::Error::Io(e))?;
-        }
+    if let Some(path) = database_url.strip_prefix("sqlite:")
+        && let Some(parent) = std::path::Path::new(path).parent()
+    {
+        std::fs::create_dir_all(parent).map_err(sqlx::Error::Io)?;
     }
 
     // Connect with create-if-missing flag

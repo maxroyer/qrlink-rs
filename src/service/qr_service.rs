@@ -12,7 +12,7 @@ pub struct QrService {
 impl QrService {
     pub fn new(config: &Config) -> AppResult<Self> {
         let generator = QrGenerator::new(config.qr_size, config.qr_branding_logo.clone())
-            .map_err(|e| AppError::QrGeneration(e))?;
+            .map_err(AppError::QrGeneration)?;
 
         Ok(Self {
             generator,
@@ -30,6 +30,6 @@ impl QrService {
     pub fn generate_for_url(&self, url: &str) -> AppResult<Vec<u8>> {
         self.generator
             .generate(url)
-            .map_err(|e| AppError::QrGeneration(e))
+            .map_err(AppError::QrGeneration)
     }
 }
