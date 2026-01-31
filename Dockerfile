@@ -34,9 +34,6 @@ RUN apt-get update && apt-get install -y \
 # Copy the binary
 COPY --from=builder /app/target/release/qrlink /app/qrlink
 
-# Copy migrations (needed for embedded migrations)
-COPY --from=builder /app/migrations /app/migrations
-
 # Copy branding assets
 COPY --from=builder /app/assets /app/assets
 
