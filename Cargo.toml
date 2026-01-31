@@ -6,8 +6,7 @@ edition = "2024"
 [dependencies]
 # Web framework
 axum = { version = "0.8", features = ["macros"] }
-tokio = { version = "1", features = ["full"] }
-tower = { version = "0.5", features = ["timeout"] }
+tokio = { version = "1", features = ["rt-multi-thread", "net", "time", "sync", "macros"] }
 tower-http = { version = "0.6", features = ["trace", "cors", "fs"] }
 
 # Database
@@ -27,8 +26,8 @@ url = { version = "2", features = ["serde"] }
 
 # QR Code
 qrcode = "0.14"
-image = "0.25"
-resvg = "0.45"
+image = { version = "0.25", default-features = false, features = ["png"] }
+resvg = "0.46"
 
 # Configuration
 dotenvy = "0.15"
@@ -41,5 +40,5 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 thiserror = "2"
 
 [dev-dependencies]
-reqwest = { version = "0.12", features = ["json"] }
+reqwest = { version = "0.13", features = ["json"] }
 tempfile = "3"
