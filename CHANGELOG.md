@@ -1,4 +1,12 @@
+## What's Changed in 1.1.0
+* ci: remove migrations from final docker image
+* chore: remove unused depencencies and bump others
+* ci: build and publish docker for arm64 as well
+
+**Full Changelog**: v1.0.0...v1.1.0
+
 ## What's Changed in 1.0.0
+* chore: update CHANGELOG for v1.0.0
 * ci: add token to trigger workflow
 * chore: update CHANGELOG for v1.0.0
 * chore: fix cliff.toml file
