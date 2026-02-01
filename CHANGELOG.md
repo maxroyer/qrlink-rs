@@ -1,4 +1,10 @@
+## What's Changed in 1.1.1
+* ci: update app version when creating a tag
+
+**Full Changelog**: v1.1.0...v1.1.1
+
 ## What's Changed in 1.1.0
+* chore: update CHANGELOG for v1.1.0
 * ci: remove migrations from final docker image
 * chore: remove unused depencencies and bump others
 * ci: build and publish docker for arm64 as well
