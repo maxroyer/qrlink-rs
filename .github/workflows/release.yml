@@ -33,6 +33,11 @@ jobs:
             exit 1
           fi
 
+      - name: Update Cargo.toml version
+        run: |
+          sed -i "s/^version = \".*\"/version = \"${{ github.event.inputs.version }}\"/" Cargo.toml
+          grep "version = \"${{ github.event.inputs.version }}\"" Cargo.toml
+
       - name: Generate changelog
         run: |
           git cliff --tag "v${{ github.event.inputs.version }}" > CHANGELOG.md
@@ -42,7 +47,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add CHANGELOG.md
+          git add CHANGELOG.md Cargo.toml
           git commit -m "chore: update CHANGELOG for v${{ github.event.inputs.version }}" || echo "No changes to commit"
           git push
 
