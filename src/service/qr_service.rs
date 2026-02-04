@@ -6,7 +6,6 @@ use crate::qr::QrGenerator;
 #[derive(Clone)]
 pub struct QrService {
     generator: QrGenerator,
-    base_url: String,
 }
 
 impl QrService {
@@ -14,16 +13,7 @@ impl QrService {
         let generator = QrGenerator::new(config.qr_size, config.qr_branding_logo.clone())
             .map_err(AppError::QrGeneration)?;
 
-        Ok(Self {
-            generator,
-            base_url: config.base_url.clone(),
-        })
-    }
-
-    /// Generate a QR code PNG for the given short code.
-    pub fn generate_qr(&self, short_code: &str) -> AppResult<Vec<u8>> {
-        let url = format!("{}/{}", self.base_url.trim_end_matches('/'), short_code);
-        self.generate_for_url(&url)
+        Ok(Self { generator })
     }
 
     /// Generate a QR code PNG for a raw URL (no shortening).
