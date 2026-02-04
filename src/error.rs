@@ -20,6 +20,9 @@ pub enum AppError {
     #[error("Rate limit exceeded")]
     RateLimitExceeded(u64),
 
+    #[error("Admin rights required")]
+    AdminRightsRequired,
+
     #[error("Failed to generate short code after multiple attempts")]
     ShortCodeExhausted,
 
@@ -61,6 +64,7 @@ impl IntoResponse for AppError {
                 )
                     .into_response();
             }
+            AppError::AdminRightsRequired => (StatusCode::FORBIDDEN, "admin_rights_required", None),
             AppError::ShortCodeExhausted => (
                 StatusCode::SERVICE_UNAVAILABLE,
                 "short_code_exhausted",

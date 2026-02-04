@@ -55,10 +55,24 @@ curl -X POST "$BASE_URL/api/v1/qr" \
 curl "$BASE_URL/api/v1/links"
 ```
 
+If `ADMIN_SECRET` is set, provide the secret using the header:
+
+```bash
+curl "$BASE_URL/api/v1/links" \
+  -H "X-Delete-Secret: your-secret"
+```
+
 ## Delete a link
 
 ```bash
 curl -X DELETE "$BASE_URL/api/v1/links/{id}"
+```
+
+If `ADMIN_SECRET` is set, provide the secret using the header:
+
+```bash
+curl -X DELETE "$BASE_URL/api/v1/links/{id}" \
+  -H "X-Delete-Secret: your-secret"
 ```
 
 ## Rate limiting

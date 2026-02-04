@@ -49,8 +49,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create rate limiter (IP-based, no authentication needed)
     let rate_limiter = rate_limit::RateLimiter::new(config.rate_limit_per_minute);
 
+    // Optional admin secret
+    let admin_secret = config.admin_secret.clone();
+
     // Create router
-    let app = http::create_router(link_service.clone(), qr_service, rate_limiter);
+    let app = http::create_router(link_service.clone(), qr_service, rate_limiter, admin_secret);
 
     // Start cleanup task if enabled
     if config.cleanup_interval_minutes > 0 {
