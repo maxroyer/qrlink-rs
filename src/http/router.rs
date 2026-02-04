@@ -20,6 +20,7 @@ pub struct AppState {
     pub link_service: LinkService,
     pub qr_service: QrService,
     pub rate_limiter: RateLimiter,
+    pub admin_secret: Option<String>,
 }
 
 /// Create the main application router.
@@ -27,11 +28,13 @@ pub fn create_router(
     link_service: LinkService,
     qr_service: QrService,
     rate_limiter: RateLimiter,
+    admin_secret: Option<String>,
 ) -> IntoMakeServiceWithConnectInfo<Router, std::net::SocketAddr> {
     let state = AppState {
         link_service,
         qr_service,
         rate_limiter,
+        admin_secret,
     };
 
     // API routes (public, no authentication)

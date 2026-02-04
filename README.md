@@ -50,6 +50,7 @@ All configuration is via environment variables:
 | `QR_BRANDING_LOGO` | `assets/logo.svg` | Path to logo for QR codes (PNG/SVG) |
 | `QR_SIZE` | `512` | QR code size in pixels |
 | `CLEANUP_INTERVAL_MINUTES` | `60` | Interval in minutes for automatic cleanup of expired links (0 to disable) |
+| `ADMIN_SECRET` | (unset) | Optional admin rights secret |
 
 ## Deployment
 

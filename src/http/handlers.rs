@@ -1,7 +1,7 @@
 use axum::{
     Json,
     extract::{ConnectInfo, Path, State},
-    http::{StatusCode, header},
+    http::{HeaderMap, StatusCode, header},
     response::{IntoResponse, Redirect, Response},
 };
 use serde::{Deserialize, Serialize};
@@ -78,17 +78,43 @@ pub async fn create_qr(
 
 /// Handler for listing all links.
 /// GET /api/v1/links
-pub async fn list_links(State(state): State<AppState>) -> AppResult<Json<Vec<LinkResponse>>> {
+/// Requires admin secret if configured.
+pub async fn list_links(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> AppResult<Json<Vec<LinkResponse>>> {
+    if let Some(required_secret) = &state.admin_secret {
+        let provided = headers
+            .get("x-admin-secret")
+            .and_then(|value| value.to_str().ok());
+
+        if provided != Some(required_secret.as_str()) {
+            return Err(AppError::AdminRightsRequired);
+        }
+    }
+
     let links = state.link_service.list_all().await?;
     Ok(Json(links))
 }
 
 /// Handler for deleting a link.
 /// DELETE /api/v1/links/:id
+/// Requires admin secret if configured.
 pub async fn delete_link(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
+    headers: HeaderMap,
 ) -> AppResult<StatusCode> {
+    if let Some(required_secret) = &state.admin_secret {
+        let provided = headers
+            .get("x-admin-secret")
+            .and_then(|value| value.to_str().ok());
+
+        if provided != Some(required_secret.as_str()) {
+            return Err(AppError::AdminRightsRequired);
+        }
+    }
+
     state.link_service.delete_link(id).await?;
     Ok(StatusCode::NO_CONTENT)
 }

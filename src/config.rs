@@ -19,6 +19,8 @@ pub struct Config {
     pub qr_size: u32,
     /// Cleanup interval in minutes (0 to disable)
     pub cleanup_interval_minutes: u64,
+    /// Optional admin secret
+    pub admin_secret: Option<String>,
 }
 
 impl Config {
@@ -65,6 +67,8 @@ impl Config {
             .parse()
             .map_err(|_| ConfigError::InvalidCleanupInterval)?;
 
+        let admin_secret = std::env::var("ADMIN_SECRET").ok();
+
         Ok(Config {
             database_url,
             base_url,
@@ -74,6 +78,7 @@ impl Config {
             qr_branding_logo,
             qr_size,
             cleanup_interval_minutes,
+            admin_secret,
         })
     }
 }
