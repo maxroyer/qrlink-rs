@@ -1,4 +1,14 @@
+## What's Changed in 1.2.1
+* ci: add Cargo.lock together with changelog
+* ci: try to improve arm64 build time
+* refactor: remove QR code generation for short links
+* tests: add admin protection tests for list and delete endpoints
+* fix(docs): fix documentation after header name change
+
+**Full Changelog**: v1.2.0...v1.2.1
+
 ## What's Changed in 1.2.0
+* chore: update CHANGELOG for v1.2.0
 * feat(api): add admin secret protection for list/delete endpoints
 
 **Full Changelog**: v1.1.1...v1.2.0
