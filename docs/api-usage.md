@@ -34,13 +34,7 @@ curl -X POST "$BASE_URL/api/v1/links" \
 curl -v "$BASE_URL/Ab3kP9x"
 ```
 
-## Get QR code for a short link
-
-```bash
-curl -o qr.png "$BASE_URL/Ab3kP9x/qr"
-```
-
-## Generate QR directly (no shortening)
+## Generate QR
 
 ```bash
 curl -X POST "$BASE_URL/api/v1/qr" \

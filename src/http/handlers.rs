@@ -129,26 +129,6 @@ pub async fn redirect(
     Ok(Redirect::temporary(link.target_url.as_str()).into_response())
 }
 
-/// Handler for generating a QR code for a short link.
-/// GET /:short_code/qr
-pub async fn get_qr_code(
-    State(state): State<AppState>,
-    Path(short_code): Path<String>,
-) -> Result<Response, AppError> {
-    // Verify link exists and is valid
-    let _link = state.link_service.resolve(&short_code).await?;
-
-    // Generate QR code
-    let png_data = state.qr_service.generate_qr(&short_code)?;
-
-    Ok((
-        StatusCode::OK,
-        [(header::CONTENT_TYPE, "image/png")],
-        png_data,
-    )
-        .into_response())
-}
-
 /// Health check endpoint.
 /// GET /health
 pub async fn health_check() -> impl IntoResponse {

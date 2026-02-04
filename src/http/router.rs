@@ -47,8 +47,7 @@ pub fn create_router(
     // Public routes
     let public_routes = Router::new()
         .route("/health", get(handlers::health_check))
-        .route("/{short_code}", get(handlers::redirect))
-        .route("/{short_code}/qr", get(handlers::get_qr_code));
+        .route("/{short_code}", get(handlers::redirect));
 
     // Serve static files from public directory
     let static_service = ServeDir::new("public");
