@@ -1,4 +1,10 @@
+## What's Changed in 1.2.0
+* feat(api): add admin secret protection for list/delete endpoints
+
+**Full Changelog**: v1.1.1...v1.2.0
+
 ## What's Changed in 1.1.1
+* chore: update CHANGELOG for v1.1.1
 * ci: update app version when creating a tag
 
 **Full Changelog**: v1.1.0...v1.1.1
