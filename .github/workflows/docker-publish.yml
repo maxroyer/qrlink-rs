@@ -41,3 +41,5 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/qrlink-rs:${{ steps.tag.outputs.TAG }}
             ${{ secrets.DOCKERHUB_USERNAME }}/qrlink-rs:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
